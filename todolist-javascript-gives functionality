@@ -1,0 +1,46 @@
+$(document).ready(function(){
+
+    //get local storage
+    //if statement checks to see if localstorage is empty and loads default todolist
+    //else it loads the user's todolist
+    if(localStorage.getItem("todolist") === null){
+        localStorage.setItem("todolist", $("#todolist").html()); 
+    }
+    else 
+        $("#todolist").html(localStorage.getItem("todolist"));
+    
+    //click on todolist items to toggle them as checked
+    $("ul").on('change', "li", (function(){
+        $(this).toggleClass("checked");
+        localStorage.setItem("todolist", $("#todolist").html());
+    }));
+    
+    //update localstorage when editing an item
+    $("ul").on('focusout', '.todolist_text', function(){
+        localStorage.setItem("todolist", $("#todolist").html());
+    });
+    
+    //add new item
+    $("#add_text").keyup(function(evt){
+        //adds new item on "enter" press
+        if(evt.which === 13){
+            var add_data = $("#add_text").val();
+            $('#todolist').append("<li class=\"todolist_item\"><input type=\"checkbox\" class =\"box\"><span class=\"todolist_text\" contenteditable=\"true\">" +add_data+ "</span><span class=\"delete\">\u00D7</span></li>");
+            
+            //make text field blank
+            $("#add_text").val("");
+            
+            //adds new item to localstorage
+            localStorage.setItem("todolist", $("#todolist").html());
+        }
+    });
+    
+    //delete an item
+    $("ul").on('click', ".delete", (function(){
+        $(this).parent("li").remove();
+        
+        //refresh user's localstorage todolist
+        localStorage.setItem("todolist", $("#todolist").html());
+        
+    }));
+});
